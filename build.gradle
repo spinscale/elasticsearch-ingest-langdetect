@@ -6,7 +6,7 @@ buildscript {
   }
 
   dependencies {
-    classpath "org.elasticsearch.gradle:build-tools:5.0.0-alpha3"
+    classpath "org.elasticsearch.gradle:build-tools:5.0.0-alpha4"
   }
 }
 
@@ -26,11 +26,8 @@ esplugin {
 
 // In this section you declare the dependencies for your production and test code
 dependencies {
-  compile 'org.elasticsearch:elasticsearch:5.0.0-alpha3'
   compile 'com.youcruit.com.cybozu.labs:langdetect:1.1.2-20151117'
   compile 'net.arnx:jsonic:1.3.10'
-
-  testCompile 'org.elasticsearch.test:framework:5.0.0-alpha3'
 }
 
 dependencyLicenses.enabled = false

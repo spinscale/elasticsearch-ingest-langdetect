@@ -17,8 +17,8 @@
 
 package org.elasticsearch.plugin.ingest.langdetect;
 
-import com.cybozu.labs.langdetect.SecureDetectorFactory;
 import com.cybozu.labs.langdetect.LangDetectException;
+import com.cybozu.labs.langdetect.SecureDetectorFactory;
 import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.node.NodeModule;
 import org.elasticsearch.plugins.Plugin;
@@ -28,16 +28,6 @@ import java.net.URISyntaxException;
 
 public class IngestLangDetectPlugin extends Plugin {
 
-    @Override
-    public String name() {
-        return "ingest-langdetect";
-    }
-
-    @Override
-    public String description() {
-        return "Ingest processor doing language detection";
-    }
-
     public void onModule(NodeModule nodeModule) throws IOException {
         try {
             SecureDetectorFactory.loadProfileFromClassPath(nodeModule.getNode().getEnvironment());
@@ -45,8 +35,7 @@ public class IngestLangDetectPlugin extends Plugin {
             throw new ElasticsearchException(e);
         }
 
-        nodeModule.registerProcessor(LangDetectProcessor.TYPE,
-                (templateService, registry) -> new LangDetectProcessor.Factory());
+        nodeModule.registerProcessor(LangDetectProcessor.TYPE, (registry) -> new LangDetectProcessor.Factory());
     }
 
 }

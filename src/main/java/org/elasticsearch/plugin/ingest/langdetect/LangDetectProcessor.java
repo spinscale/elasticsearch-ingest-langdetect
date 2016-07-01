@@ -21,15 +21,15 @@ import com.cybozu.labs.langdetect.Detector;
 import com.cybozu.labs.langdetect.DetectorFactory;
 import org.elasticsearch.common.unit.ByteSizeUnit;
 import org.elasticsearch.common.unit.ByteSizeValue;
-import org.elasticsearch.ingest.core.AbstractProcessor;
-import org.elasticsearch.ingest.core.AbstractProcessorFactory;
-import org.elasticsearch.ingest.core.IngestDocument;
+import org.elasticsearch.ingest.AbstractProcessor;
+import org.elasticsearch.ingest.AbstractProcessorFactory;
+import org.elasticsearch.ingest.IngestDocument;
 
 import java.io.IOException;
 import java.util.Map;
 
-import static org.elasticsearch.ingest.core.ConfigurationUtils.readOptionalStringProperty;
-import static org.elasticsearch.ingest.core.ConfigurationUtils.readStringProperty;
+import static org.elasticsearch.ingest.ConfigurationUtils.readOptionalStringProperty;
+import static org.elasticsearch.ingest.ConfigurationUtils.readStringProperty;
 
 public class LangDetectProcessor extends AbstractProcessor {
 
