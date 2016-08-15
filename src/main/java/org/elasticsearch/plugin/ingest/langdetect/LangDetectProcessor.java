@@ -22,8 +22,8 @@ import com.cybozu.labs.langdetect.DetectorFactory;
 import org.elasticsearch.common.unit.ByteSizeUnit;
 import org.elasticsearch.common.unit.ByteSizeValue;
 import org.elasticsearch.ingest.AbstractProcessor;
-import org.elasticsearch.ingest.AbstractProcessorFactory;
 import org.elasticsearch.ingest.IngestDocument;
+import org.elasticsearch.ingest.Processor;
 
 import java.io.IOException;
 import java.util.Map;
@@ -63,19 +63,20 @@ public class LangDetectProcessor extends AbstractProcessor {
         return TYPE;
     }
 
-    public static final class Factory extends AbstractProcessorFactory<LangDetectProcessor> {
+    public static final class Factory implements Processor.Factory {
 
         private static final ByteSizeValue DEFAULT_MAX_LENGTH = new ByteSizeValue(10, ByteSizeUnit.KB);
 
         @Override
-        public LangDetectProcessor doCreate(String processorTag, Map<String, Object> config) throws Exception {
-            String field = readStringProperty(TYPE, processorTag, config, "field");
-            String targetField = readStringProperty(TYPE, processorTag, config, "target_field");
-            String maxLengthStr = readOptionalStringProperty(TYPE, processorTag, config, "max_length");
+        public LangDetectProcessor create(Map<String, Processor.Factory> factories, String tag, Map<String, Object> config)
+                throws Exception {
+            String field = readStringProperty(TYPE, tag, config, "field");
+            String targetField = readStringProperty(TYPE, tag, config, "target_field");
+            String maxLengthStr = readOptionalStringProperty(TYPE, tag, config, "max_length");
 
             ByteSizeValue maxLength = ByteSizeValue.parseBytesSizeValue(maxLengthStr, DEFAULT_MAX_LENGTH, "max_length");
 
-            return new LangDetectProcessor(processorTag, field, targetField, maxLength);
+            return new LangDetectProcessor(tag, field, targetField, maxLength);
         }
     }
 }

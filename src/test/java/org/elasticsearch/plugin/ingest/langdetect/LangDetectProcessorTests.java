@@ -25,6 +25,7 @@ import org.elasticsearch.ingest.IngestDocument;
 import org.elasticsearch.test.ESTestCase;
 import org.junit.BeforeClass;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -75,7 +76,7 @@ public class LangDetectProcessorTests extends ESTestCase {
         document.put(field, value);
         IngestDocument ingestDocument = RandomDocumentPicks.randomIngestDocument(random(), document);
 
-        LangDetectProcessor processor = new LangDetectProcessor.Factory().doCreate(randomAsciiOfLength(10), config);
+        LangDetectProcessor processor = new LangDetectProcessor.Factory().create(Collections.emptyMap(), randomAsciiOfLength(10), config);
         processor.execute(ingestDocument);
         return ingestDocument.getSourceAndMetadata();
     }

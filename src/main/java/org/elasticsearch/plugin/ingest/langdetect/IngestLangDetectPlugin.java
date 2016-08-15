@@ -20,22 +20,27 @@ package org.elasticsearch.plugin.ingest.langdetect;
 import com.cybozu.labs.langdetect.LangDetectException;
 import com.cybozu.labs.langdetect.SecureDetectorFactory;
 import org.elasticsearch.ElasticsearchException;
-import org.elasticsearch.node.NodeModule;
+import org.elasticsearch.ingest.Processor;
+import org.elasticsearch.plugins.IngestPlugin;
 import org.elasticsearch.plugins.Plugin;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.Map;
 
-public class IngestLangDetectPlugin extends Plugin {
+public class IngestLangDetectPlugin extends Plugin implements IngestPlugin {
 
-    public void onModule(NodeModule nodeModule) throws IOException {
+    @Override
+    public Map<String, Processor.Factory> getProcessors(Processor.Parameters parameters) {
         try {
-            SecureDetectorFactory.loadProfileFromClassPath(nodeModule.getNode().getEnvironment());
-        } catch (LangDetectException | URISyntaxException e) {
+            SecureDetectorFactory.loadProfileFromClassPath(parameters.env);
+        } catch (LangDetectException | URISyntaxException | IOException e) {
             throw new ElasticsearchException(e);
         }
 
-        nodeModule.registerProcessor(LangDetectProcessor.TYPE, (registry) -> new LangDetectProcessor.Factory());
+        Map<String, Processor.Factory> factoryMap = new HashMap<>(1);
+        factoryMap.put(LangDetectProcessor.TYPE, new LangDetectProcessor.Factory());
+        return factoryMap;
     }
-
 }
