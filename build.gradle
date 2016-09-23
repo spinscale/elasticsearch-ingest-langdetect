@@ -6,7 +6,7 @@ buildscript {
   }
 
   dependencies {
-    classpath "org.elasticsearch.gradle:build-tools:5.0.0-alpha5"
+    classpath "org.elasticsearch.gradle:build-tools:5.0.0-beta1"
   }
 }
 
@@ -15,7 +15,6 @@ version = '0.0.1-SNAPSHOT'
 
 apply plugin: 'java'
 apply plugin: 'elasticsearch.esplugin'
-apply plugin: 'com.bmuschko.nexus'
 apply plugin: 'idea'
 
 esplugin {
