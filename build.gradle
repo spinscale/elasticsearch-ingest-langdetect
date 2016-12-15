@@ -7,6 +7,7 @@ buildscript {
 
   dependencies {
     classpath "org.elasticsearch.gradle:build-tools:5.1.1"
+    classpath 'net.researchgate:gradle-release:2.4.0'
   }
 }
 
@@ -16,6 +17,7 @@ version = '0.0.1-SNAPSHOT'
 apply plugin: 'java'
 apply plugin: 'elasticsearch.esplugin'
 apply plugin: 'idea'
+apply plugin: 'net.researchgate.release'
 
 esplugin {
   name 'ingest-langdetect'
