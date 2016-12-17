@@ -7,17 +7,17 @@ buildscript {
 
   dependencies {
     classpath "org.elasticsearch.gradle:build-tools:5.1.1"
-    classpath 'net.researchgate:gradle-release:2.4.0'
   }
 }
 
-group = 'org.elasticsearch.plugin.ingest'
-version = '0.0.1-SNAPSHOT'
+group = 'de.spinscale.elasticsearch.plugin.ingest'
+version = '5.1.1.1-SNAPSHOT'
 
 apply plugin: 'java'
 apply plugin: 'elasticsearch.esplugin'
 apply plugin: 'idea'
-apply plugin: 'net.researchgate.release'
+apply plugin: 'maven'
+apply plugin: 'signing'
 
 esplugin {
   name 'ingest-langdetect'
@@ -33,3 +33,55 @@ dependencies {
 
 dependencyLicenses.enabled = false
 thirdPartyAudit.enabled = false
+
+artifacts {
+    archives javadocJar, sourcesJar
+}
+
+signing {
+    sign configurations.archives
+}
+
+uploadArchives {
+  repositories {
+    mavenDeployer {
+      beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+      repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+        authentication(userName: ossrhUsername, password: ossrhPassword)
+      }
+
+      snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+        authentication(userName: ossrhUsername, password: ossrhPassword)
+      }
+
+      pom.project {
+        name 'Elasticsearch Ingest Language Detection Plugin'
+        packaging 'zip'
+	    artifactId 'ingest-langdetect'
+        url 'https://github.com/spinscale/elasticsearch-ingest-langdetect'
+
+        scm {
+          connection 'scm:git:https://github.com/spinscale/elasticsearch-ingest-langdetect'
+          developerConnection 'scm:git:git@github.com:spinscale/elasticsearch-ingest-langdetect.git'
+          url 'https://github.com/spinscale/elasticsearch-ingest-langdetect'
+        }
+
+        licenses {
+          license {
+            name 'The Apache License, Version 2.0'
+            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+          }
+        }
+
+        developers {
+          developer {
+            id 'spinscale'
+            name 'Alexander Reelsen'
+            email 'alr@spinscale.de'
+          }
+        }
+      }
+    }
+  }
+}
