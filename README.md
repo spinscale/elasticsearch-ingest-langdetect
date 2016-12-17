@@ -12,19 +12,21 @@ PUT _ingest/pipeline/langdetect-pipeline
   "processors": [
     {
       "langdetect" : {
-        "field" : "my_field"
+        "field" : "my_field",
         "target_field" : "language"
       }
     }
   ]
 }
 
-PUT /my-index/my-type/1?pipeline_id=langdetect-pipeline
+PUT /my-index/my-type/1?pipeline=langdetect-pipeline
 {
   "my_field" : "This is hopefully an english text, that will be detected."
 }
 
 GET /my-index/my-type/1
+
+# Expected response
 {
   "my_field" : "This is hopefully an english text, that will be detected.",
   "language": "en"
