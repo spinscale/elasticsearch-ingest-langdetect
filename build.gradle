@@ -59,6 +59,7 @@ uploadArchives {
         name 'Elasticsearch Ingest Language Detection Plugin'
         packaging 'zip'
 	    artifactId 'ingest-langdetect'
+        description 'Ingest processor doing language detection for fields'
         url 'https://github.com/spinscale/elasticsearch-ingest-langdetect'
 
         scm {
