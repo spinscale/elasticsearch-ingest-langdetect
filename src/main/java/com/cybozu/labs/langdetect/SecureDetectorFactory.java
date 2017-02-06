@@ -18,6 +18,7 @@
 package com.cybozu.labs.langdetect;
 
 import com.cybozu.labs.langdetect.util.LangProfile;
+import org.elasticsearch.common.xcontent.NamedXContentRegistry;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.env.Environment;
 
@@ -64,7 +65,7 @@ public class SecureDetectorFactory {
             String path = iter.next().toString().replaceFirst("/","");
             InputStream stream = SecureDetectorFactory.class.getClassLoader().getResourceAsStream(path);
 
-            Map<String, Object> data = XContentType.JSON.xContent().createParser(stream).map();
+            Map<String, Object> data = XContentType.JSON.xContent().createParser(NamedXContentRegistry.EMPTY, stream).map();
             profiles.put(path, createLangProfile(data));
         }
         ds.close();
