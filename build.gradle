@@ -11,7 +11,7 @@ buildscript {
 }
 
 group = 'de.spinscale.elasticsearch.plugin'
-version = '5.2.0.1'
+version = '5.2.0.2-SNAPSHOT'
 
 apply plugin: 'java'
 apply plugin: 'elasticsearch.esplugin'
