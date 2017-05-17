@@ -76,7 +76,7 @@ public class LangDetectProcessorTests extends ESTestCase {
         document.put(field, value);
         IngestDocument ingestDocument = RandomDocumentPicks.randomIngestDocument(random(), document);
 
-        LangDetectProcessor processor = new LangDetectProcessor.Factory().create(Collections.emptyMap(), randomAsciiOfLength(10), config);
+        LangDetectProcessor processor = new LangDetectProcessor.Factory().create(Collections.emptyMap(), randomAlphaOfLength(10), config);
         processor.execute(ingestDocument);
         return ingestDocument.getSourceAndMetadata();
     }
