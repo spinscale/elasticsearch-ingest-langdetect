@@ -6,12 +6,12 @@ buildscript {
   }
 
   dependencies {
-    classpath "org.elasticsearch.gradle:build-tools:5.4.0"
+    classpath "org.elasticsearch.gradle:build-tools:5.4.1"
   }
 }
 
 group = 'de.spinscale.elasticsearch.plugin'
-version = '5.4.0.1-SNAPSHOT'
+version = '5.4.1.1-SNAPSHOT'
 
 apply plugin: 'java'
 apply plugin: 'elasticsearch.esplugin'
