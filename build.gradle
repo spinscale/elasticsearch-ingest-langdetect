@@ -10,6 +10,10 @@ buildscript {
   }
 }
 
+plugins {
+  id 'net.researchgate.release' version '2.4.0'
+}
+
 group = 'de.spinscale.elasticsearch.plugin'
 version = '5.5.1.1-SNAPSHOT'
 
