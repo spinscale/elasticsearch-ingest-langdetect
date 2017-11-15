@@ -18,6 +18,7 @@
 package com.cybozu.labs.langdetect;
 
 import com.cybozu.labs.langdetect.util.LangProfile;
+import org.elasticsearch.common.io.FileSystemUtils;
 import org.elasticsearch.common.xcontent.NamedXContentRegistry;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.env.Environment;
@@ -52,11 +53,11 @@ public class SecureDetectorFactory {
         Path tmp = Files.createTempFile(environment.tmpFile(), "langdetect", ".jar");
         URL resource = SecureDetectorFactory.class.getClassLoader().getResource("profiles/");
         // ugly hack to get back the jar file only and then copy it
-        String jarName = resource.toURI().getSchemeSpecificPart().replaceFirst("!/profiles/", "");
-        try (InputStream in = new URL(jarName).openStream()) {
+        String jarName = resource.toURI().getSchemeSpecificPart().replaceFirst("!/profiles/", "").replaceFirst("^file:", "");
+        try (InputStream in = FileSystemUtils.openFileURLStream(new URL("file://" + jarName))) {
             Files.copy(in, tmp, StandardCopyOption.REPLACE_EXISTING);
         }
-        FileSystem fileSystem = FileSystems.newFileSystem(new URI("jar:" + tmp.toUri()), Collections.emptyMap());
+        FileSystem fileSystem = FileSystems.newFileSystem(new URI("jar:file://" + tmp.toAbsolutePath().toString()), Collections.emptyMap());
 
         DirectoryStream<Path> ds = Files.newDirectoryStream(fileSystem.getPath("profiles/"));
         Iterator<Path> iter = ds.iterator();
