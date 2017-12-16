@@ -36,7 +36,7 @@ public class LangDetectProcessorTests extends ESTestCase {
     @BeforeClass
     public static void loadProfiles() throws Exception {
         Settings settings = Settings.builder().put("path.home", createTempDir()).build();
-        Environment environment = new Environment(settings);
+        Environment environment = new Environment(settings, createTempDir());
         SecureDetectorFactory.loadProfileFromClassPath(environment);
     }
 
