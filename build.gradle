@@ -1,3 +1,5 @@
+import java.nio.file.Files
+
 buildscript {
   repositories {
     mavenLocal()
@@ -12,6 +14,7 @@ buildscript {
 
 plugins {
   id 'net.researchgate.release' version '2.4.0'
+  id "co.riiid.gradle" version "0.4.2"
 }
 
 group = 'de.spinscale.elasticsearch.plugin'
@@ -20,8 +23,6 @@ version = '6.2.2.1-SNAPSHOT'
 apply plugin: 'java'
 apply plugin: 'elasticsearch.esplugin'
 apply plugin: 'idea'
-apply plugin: 'maven'
-apply plugin: 'signing'
 
 // license of this project
 licenseFile = rootProject.file('LICENSE.txt')
@@ -47,10 +48,25 @@ dependencies {
 dependencyLicenses.enabled = false
 thirdPartyAudit.enabled = false
 
-artifacts {
-    archives javadocJar, sourcesJar
-}
+githubRelease.doFirst {
+  if (!System.getProperty('GITHUB_TOKEN', '')) {
+    throw new Exception('Missing property GITHUB_TOKEN')
+  }
 
-signing {
-    sign configurations.archives
+  // check if zip file is there
+  assert file("build/distributions/ingest-langdetect-${version}.zip").exists()
+
+  // rename zip file
+  def currentVersion = version.replace('-SNAPSHOT', '')
+  def filename = "build/distributions/ingest-langdetect-${currentVersion}.zip"
+  Files.copy(file("build/distributions/ingest-langdetect-${version}.zip").toPath(), file(filename).toPath())
+
+  // configuration
+  github {
+    owner = 'spinscale'
+    repo = 'elasticsearch-ingest-langdetect'
+    token = System.getProperty('GITHUB_TOKEN')
+    tagName = currentVersion
+    assets = [ filename ]
+  }
 }
