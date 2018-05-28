@@ -57,7 +57,8 @@ public class SecureDetectorFactory {
         try (InputStream in = FileSystemUtils.openFileURLStream(new URL("file://" + jarName))) {
             Files.copy(in, tmp, StandardCopyOption.REPLACE_EXISTING);
         }
-        FileSystem fileSystem = FileSystems.newFileSystem(new URI("jar:file://" + tmp.toAbsolutePath().toString()), Collections.emptyMap());
+        FileSystem fileSystem = null;
+        fileSystem = FileSystems.newFileSystem(new URI("jar:" + tmp.toAbsolutePath().toUri().toString()), Collections.emptyMap());
 
         DirectoryStream<Path> ds = Files.newDirectoryStream(fileSystem.getPath("profiles/"));
         Iterator<Path> iter = ds.iterator();
