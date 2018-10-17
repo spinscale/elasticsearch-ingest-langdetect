@@ -50,6 +50,64 @@ GET /my-index/my-type/1
 }
 ```
 
+You could also set certain fields that use different analyzers for different languages
+
+```
+PUT _ingest/pipeline/langdetect-analyzer-pipeline
+{
+  "description": "A pipeline to index data into language specific analyzers",
+  "processors": [
+    {
+      "langdetect": {
+        "field": "my_field",
+        "target_field": "lang"
+      }
+    },
+    {
+      "script": {
+        "source": "ctx.language = [:];ctx.language[ctx.lang] = ctx.remove('my_field')"
+      }
+    }
+  ]
+}
+
+PUT documents
+{
+  "mappings": {
+    "doc" : {
+      "properties" : {
+        "language": {
+          "properties": {
+            "de" : {
+              "type": "text",
+              "analyzer": "german"
+            },
+            "en" : {
+              "type": "text",
+              "analyzer": "english"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+PUT /my-index/doc/1?pipeline=langdetect-analyzer-pipeline
+{
+  "my_field" : "This is an english text"
+}
+
+PUT /my-index/doc/2?pipeline=langdetect-analyzer-pipeline
+{
+  "my_field" : "Das hier ist ein deutscher Text."
+}
+
+GET my-index/doc/1
+
+GET my-index/doc/2
+```
+
 ## Configuration
 
 | Parameter | Use |
