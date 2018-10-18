@@ -30,6 +30,7 @@ import java.util.Map;
 
 import static org.elasticsearch.ingest.ConfigurationUtils.readOptionalStringProperty;
 import static org.elasticsearch.ingest.ConfigurationUtils.readStringProperty;
+import static org.elasticsearch.ingest.ConfigurationUtils.readBooleanProperty;
 
 public class LangDetectProcessor extends AbstractProcessor {
 
@@ -38,12 +39,15 @@ public class LangDetectProcessor extends AbstractProcessor {
     private final String field;
     private final String targetField;
     private final ByteSizeValue maxLength;
+    private final boolean ignoreMissing;
 
-    public LangDetectProcessor(String tag, String field, String targetField, ByteSizeValue maxLength) throws IOException {
+    public LangDetectProcessor(String tag, String field, String targetField, ByteSizeValue maxLength, boolean ignoreMissing)
+            throws IOException {
         super(tag);
         this.field = field;
         this.targetField = targetField;
         this.maxLength = maxLength;
+        this.ignoreMissing = ignoreMissing;
     }
 
     @Override
@@ -51,7 +55,15 @@ public class LangDetectProcessor extends AbstractProcessor {
         Detector detector = DetectorFactory.create();
         detector.setMaxTextLength(maxLength.bytesAsInt());
 
-        String content = ingestDocument.getFieldValue(field, String.class);
+        String content;
+        try {
+            content = ingestDocument.getFieldValue(field, String.class);
+        } catch (IllegalArgumentException e) {
+            if (ignoreMissing) {
+                return;
+            }
+            throw e;
+        }
         detector.append(content);
         String language = detector.detect();
 
@@ -76,7 +88,9 @@ public class LangDetectProcessor extends AbstractProcessor {
 
             ByteSizeValue maxLength = ByteSizeValue.parseBytesSizeValue(maxLengthStr, DEFAULT_MAX_LENGTH, "max_length");
 
-            return new LangDetectProcessor(tag, field, targetField, maxLength);
+            boolean ignoreMissing = readBooleanProperty(TYPE, tag, config, "ignore_missing", false);
+
+            return new LangDetectProcessor(tag, field, targetField, maxLength, ignoreMissing);
         }
     }
 }
