@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.not;
 
 public class LangDetectProcessorTests extends ESTestCase {
 
@@ -44,6 +45,7 @@ public class LangDetectProcessorTests extends ESTestCase {
         Map<String, Object> config = new HashMap<>();
         config.put("field", "source_field");
         config.put("target_field", "language");
+        config.put("ignore_missing", false);
 
         Map<String, Object> data = ingestDocument(config,
                 "source_field", "This is hopefully an english text, that will be detected.");
@@ -56,6 +58,7 @@ public class LangDetectProcessorTests extends ESTestCase {
         config.put("field", "source_field");
         config.put("target_field", "language");
         config.put("max_length", "20b");
+        config.put("ignore_missing", false);
 
         // a document with a lot of german text at the end, that should be ignored due to max length
         // copied from https://de.wikipedia.org/wiki/Unwetter_in_Mitteleuropa_2016
@@ -71,6 +74,18 @@ public class LangDetectProcessorTests extends ESTestCase {
         assertThat(data, hasEntry("language", "en"));
     }
 
+    public void testIgnoreMissingConfiguration() throws Exception {
+        Map<String, Object> config = new HashMap<>();
+        config.put("field", "missing_source_field");
+        config.put("target_field", "language");
+        config.put("ignore_missing", true);
+
+        Map<String, Object> data = ingestDocument(config,
+                "source_field", "This is hopefully an english text, that will be detected.");
+
+        assertThat(data, not(hasEntry("language", "en")));
+    }
+
     private Map<String, Object> ingestDocument(Map<String, Object> config, String field, String value) throws Exception {
         Map<String, Object> document = new HashMap<>();
         document.put(field, value);
@@ -81,4 +96,3 @@ public class LangDetectProcessorTests extends ESTestCase {
         return ingestDocument.getSourceAndMetadata();
     }
 }
-
