@@ -112,9 +112,10 @@ GET my-index/doc/2
 
 | Parameter | Use |
 | --- | --- |
-| field         | Field name of where to read the content from |
-| target_field  | Field name to write the language to |
-| max_length    | Max length of of characters to read, defaults to 10kb, requires a byte size value, like 1mb |
+| field          | Field name of where to read the content from |
+| target_field   | Field name to write the language to |
+| max_length     | Max length of of characters to read, defaults to 10kb, requires a byte size value, like 1mb |
+| ignore_missing | Ignore missing source field. Not throwing exception in that case. Expects for boolean value, defaults to false. |
 
 ## Setup
 
