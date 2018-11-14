@@ -28,9 +28,9 @@ import org.elasticsearch.ingest.Processor;
 import java.io.IOException;
 import java.util.Map;
 
+import static org.elasticsearch.ingest.ConfigurationUtils.readBooleanProperty;
 import static org.elasticsearch.ingest.ConfigurationUtils.readOptionalStringProperty;
 import static org.elasticsearch.ingest.ConfigurationUtils.readStringProperty;
-import static org.elasticsearch.ingest.ConfigurationUtils.readBooleanProperty;
 
 public class LangDetectProcessor extends AbstractProcessor {
 
@@ -51,7 +51,7 @@ public class LangDetectProcessor extends AbstractProcessor {
     }
 
     @Override
-    public void execute(IngestDocument ingestDocument) throws Exception {
+    public IngestDocument execute(IngestDocument ingestDocument) throws Exception {
         Detector detector = DetectorFactory.create();
         detector.setMaxTextLength(maxLength.bytesAsInt());
 
@@ -60,7 +60,7 @@ public class LangDetectProcessor extends AbstractProcessor {
             content = ingestDocument.getFieldValue(field, String.class);
         } catch (IllegalArgumentException e) {
             if (ignoreMissing) {
-                return;
+                return ingestDocument;
             }
             throw e;
         }
@@ -68,6 +68,8 @@ public class LangDetectProcessor extends AbstractProcessor {
         String language = detector.detect();
 
         ingestDocument.setFieldValue(targetField, language);
+
+        return ingestDocument;
     }
 
     @Override
