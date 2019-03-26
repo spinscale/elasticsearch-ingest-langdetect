@@ -65,8 +65,9 @@ public class SecureDetectorFactory {
         Iterator<Path> iter = ds.iterator();
         Map<String, LangProfile> profiles = new HashMap<>();
         while (iter.hasNext()) {
-            String path = iter.next().toString().replaceFirst("/","");
+            String path = iter.next().toString().replaceFirst("^/","");
             InputStream stream = SecureDetectorFactory.class.getClassLoader().getResourceAsStream(path);
+            assert stream != null;
 
             Map<String, Object> data = XContentType.JSON.xContent().createParser(NamedXContentRegistry.EMPTY,
                     DeprecationHandler.THROW_UNSUPPORTED_OPERATION, stream).map();
