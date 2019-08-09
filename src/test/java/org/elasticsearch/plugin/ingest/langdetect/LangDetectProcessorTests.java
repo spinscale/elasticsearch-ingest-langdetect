@@ -86,6 +86,18 @@ public class LangDetectProcessorTests extends ESTestCase {
         assertThat(data, not(hasEntry("language", "en")));
     }
 
+    public void testEmptyString() throws Exception {
+        Map<String, Object> config = new HashMap<>();
+        config.put("field", "source_field");
+        config.put("target_field", "language");
+        config.put("ignore_missing", randomBoolean());
+
+        Map<String, Object> data = ingestDocument(config,"source_field", "");
+
+        assertThat(data, not(hasEntry("language", "en")));
+
+    }
+
     private Map<String, Object> ingestDocument(Map<String, Object> config, String field, String value) throws Exception {
         Map<String, Object> document = new HashMap<>();
         document.put(field, value);

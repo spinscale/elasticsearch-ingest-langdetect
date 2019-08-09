@@ -19,6 +19,7 @@ package org.elasticsearch.plugin.ingest.langdetect;
 
 import com.cybozu.labs.langdetect.Detector;
 import com.cybozu.labs.langdetect.DetectorFactory;
+import org.elasticsearch.common.Strings;
 import org.elasticsearch.common.unit.ByteSizeUnit;
 import org.elasticsearch.common.unit.ByteSizeValue;
 import org.elasticsearch.ingest.AbstractProcessor;
@@ -64,6 +65,10 @@ public class LangDetectProcessor extends AbstractProcessor {
             }
             throw e;
         }
+        if (Strings.isEmpty(content)) {
+            return ingestDocument;
+        }
+
         detector.append(content);
         String language = detector.detect();
 
