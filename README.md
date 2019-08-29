@@ -155,6 +155,7 @@ During text processing, the plugin clears it. In particular, it cuts out e-mails
 }
 
 ```
+In this case, the text processing will not crash and the body2.txt field will be set to "un" (unknown).
 
 ## Configuration
 
