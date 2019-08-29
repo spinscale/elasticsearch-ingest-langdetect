@@ -130,7 +130,7 @@ GET my-index/doc/1
 
 GET my-index/doc/2
 ```
-During text processing, the plugin clears it. In particular, it cuts out e-mails and links to sites. In addition, the text may contain only numbers and it is impossible to determine the language. In this case, an exception is thrown. This may interfere with bulk queries or reindex queries. A similar situation can be handled like this:
+During text processing, the plugin clears it. In particular, langdetect cuts out e-mails and links to sites. In addition, the text can only contain numbers, so langdetect will not be able to determine the language. In this case, an exception is thrown. This may interfere with bulk queries or reindex queries. A similar situation can be handled like this:
 ```
 {
   "description": "Langdetect on body2.txt.",
@@ -138,7 +138,6 @@ During text processing, the plugin clears it. In particular, it cuts out e-mails
   
     {
       "langdetect": {
-        "if": "ctx.body2?.txt != null && ctx.body2.txt != \"\"" ,
         "field":"body2.txt",
         "target_field": "body2.lang",
         "ignore_missing": true
