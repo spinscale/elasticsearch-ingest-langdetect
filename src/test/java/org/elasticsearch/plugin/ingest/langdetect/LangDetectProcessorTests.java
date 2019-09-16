@@ -17,6 +17,7 @@
 
 package org.elasticsearch.plugin.ingest.langdetect;
 
+import com.cybozu.labs.langdetect.LangDetectException;
 import com.cybozu.labs.langdetect.SecureDetectorFactory;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.env.Environment;
@@ -30,6 +31,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 
 public class LangDetectProcessorTests extends ESTestCase {
@@ -42,23 +44,15 @@ public class LangDetectProcessorTests extends ESTestCase {
     }
 
     public void testThatProcessorWorks() throws Exception {
-        Map<String, Object> config = new HashMap<>();
-        config.put("field", "source_field");
-        config.put("target_field", "language");
-        config.put("ignore_missing", false);
-
-        Map<String, Object> data = ingestDocument(config,
+        Map<String, Object> data = ingestDocument(config("source_field", "language", false),
                 "source_field", "This is hopefully an english text, that will be detected.");
 
         assertThat(data, hasEntry("language", "en"));
     }
 
     public void testMaxLengthConfiguration() throws Exception {
-        Map<String, Object> config = new HashMap<>();
-        config.put("field", "source_field");
-        config.put("target_field", "language");
+        Map<String, Object> config = config("source_field", "language", false);
         config.put("max_length", "20b");
-        config.put("ignore_missing", false);
 
         // a document with a lot of german text at the end, that should be ignored due to max length
         // copied from https://de.wikipedia.org/wiki/Unwetter_in_Mitteleuropa_2016
@@ -75,27 +69,24 @@ public class LangDetectProcessorTests extends ESTestCase {
     }
 
     public void testIgnoreMissingConfiguration() throws Exception {
-        Map<String, Object> config = new HashMap<>();
-        config.put("field", "missing_source_field");
-        config.put("target_field", "language");
-        config.put("ignore_missing", true);
-
-        Map<String, Object> data = ingestDocument(config,
+        Map<String, Object> data = ingestDocument(config("missing_source_field", "language", true),
                 "source_field", "This is hopefully an english text, that will be detected.");
 
         assertThat(data, not(hasEntry("language", "en")));
     }
 
     public void testEmptyString() throws Exception {
-        Map<String, Object> config = new HashMap<>();
-        config.put("field", "source_field");
-        config.put("target_field", "language");
-        config.put("ignore_missing", randomBoolean());
-
-        Map<String, Object> data = ingestDocument(config,"source_field", "");
+        Map<String, Object> data = ingestDocument(config("source_field", "language", randomBoolean()),"source_field", "");
 
         assertThat(data, not(hasEntry("language", "en")));
+    }
 
+    public void testNumbersOnlyThrowsException() throws Exception {
+        Map<String, Object> config = config("source_field", "language", false);
+        LangDetectException e = expectThrows(LangDetectException.class,
+                () -> ingestDocument(config, "source_field", "124 56456 546 3432"));
+
+        assertThat(e.getMessage(), is("no features in text"));
     }
 
     private Map<String, Object> ingestDocument(Map<String, Object> config, String field, String value) throws Exception {
@@ -105,5 +96,13 @@ public class LangDetectProcessorTests extends ESTestCase {
 
         LangDetectProcessor processor = new LangDetectProcessor.Factory().create(Collections.emptyMap(), randomAlphaOfLength(10), config);
         return processor.execute(ingestDocument).getSourceAndMetadata();
+    }
+
+    private Map<String, Object> config(String sourceField, String targetField, boolean ignoreMissing) {
+        final Map<String, Object> config = new HashMap<>();
+        config.put("field", sourceField);
+        config.put("target_field", targetField);
+        config.put("ignore_missing", ignoreMissing);
+        return config;
     }
 }
