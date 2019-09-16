@@ -6,6 +6,7 @@ Uses the [langdetect](https://github.com/YouCruit/language-detection/) plugin to
 
 | ES    | Command |
 | ----- | ------- |
+| 7.3.2 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/7.3.2.1/ingest-langdetect-7.3.2.1.zip` |
 | 7.3.1 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/7.3.1.1/ingest-langdetect-7.3.1.1.zip` |
 | 7.3.0 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/7.3.0.1/ingest-langdetect-7.3.0.1.zip` |
 | 7.2.1 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/7.2.1.1/ingest-langdetect-7.2.1.1.zip` |
@@ -14,6 +15,7 @@ Uses the [langdetect](https://github.com/YouCruit/language-detection/) plugin to
 | 7.1.0 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/7.1.0.1/ingest-langdetect-7.1.0.1.zip` |
 | 7.0.1 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/7.0.1.1/ingest-langdetect-7.0.1.1.zip` |
 | 7.0.0 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/7.0.0.1/ingest-langdetect-7.0.0.1.zip` |
+| 6.8.3 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/6.8.3.1/ingest-langdetect-6.8.3.1.zip` |
 | 6.8.2 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/6.8.2.1/ingest-langdetect-6.8.2.1.zip` |
 | 6.8.1 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/6.8.1.1/ingest-langdetect-6.8.1.1.zip` |
 | 6.8.0 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/6.8.0.1/ingest-langdetect-6.8.0.1.zip` |
