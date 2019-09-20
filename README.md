@@ -132,7 +132,7 @@ GET my-index/doc/2
 ```
 
 
-During text processing, the plugin clears it. In particular, langdetect cuts out e-mails and links to sites. In addition, the text can only contain numbers, so langdetect will not be able to determine the language. In this case, an exception is thrown. This may interfere with bulk queries or reindex queries. A similar situation can be handled like this:
+During text processing, the plugin clears it. In particular, language-detection cuts out e-mails and links to sites. In addition, the text can only contain numbers, so langdetect will not be able to determine the language. In this case, an exception is thrown. This may interfere with bulk queries or reindex queries. A similar situation can be handled like this:
 
 ```
 {
