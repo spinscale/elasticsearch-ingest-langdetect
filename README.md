@@ -2,6 +2,10 @@
 
 Uses the [langdetect](https://github.com/YouCruit/language-detection/) plugin to try to find out the language used in a field.
 
+Note that Elasticsearch has native support for langdetection nowadays using the
+`inference` ingest processor. See more in
+[the documentation](https://www.elastic.co/guide/en/machine-learning/current/ml-lang-ident.html)
+
 ## Installation
 
 | ES    | Command |
