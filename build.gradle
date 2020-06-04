@@ -53,6 +53,8 @@ dependencies {
 
 dependencyLicenses.enabled = false
 thirdPartyAudit.enabled = false
+validateNebulaPom.enabled = false
+licenseHeaders.enabled = false
 
 githubRelease.doFirst {
   if (!System.getProperty('GITHUB_TOKEN', '')) {
