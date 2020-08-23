@@ -42,9 +42,10 @@ public class LangDetectProcessor extends AbstractProcessor {
     private final ByteSizeValue maxLength;
     private final boolean ignoreMissing;
 
-    public LangDetectProcessor(String tag, String field, String targetField, ByteSizeValue maxLength, boolean ignoreMissing)
+    public LangDetectProcessor(String tag, String description, String field, String targetField,
+                               ByteSizeValue maxLength, boolean ignoreMissing)
             throws IOException {
-        super(tag, "Ingest processor doing language detection for fields");
+        super(tag, description);
         this.field = field;
         this.targetField = targetField;
         this.maxLength = maxLength;
@@ -97,7 +98,7 @@ public class LangDetectProcessor extends AbstractProcessor {
 
             boolean ignoreMissing = readBooleanProperty(TYPE, tag, config, "ignore_missing", false);
 
-            return new LangDetectProcessor(tag, field, targetField, maxLength, ignoreMissing);
+            return new LangDetectProcessor(tag, description, field, targetField, maxLength, ignoreMissing);
         }
     }
 }
