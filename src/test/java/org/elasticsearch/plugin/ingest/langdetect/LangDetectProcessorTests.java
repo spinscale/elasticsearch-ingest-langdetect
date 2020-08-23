@@ -22,6 +22,7 @@ import com.cybozu.labs.langdetect.SecureDetectorFactory;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.env.Environment;
 import org.elasticsearch.ingest.IngestDocument;
+import org.elasticsearch.ingest.Processor;
 import org.elasticsearch.ingest.RandomDocumentPicks;
 import org.elasticsearch.test.ESTestCase;
 import org.junit.BeforeClass;
@@ -94,7 +95,7 @@ public class LangDetectProcessorTests extends ESTestCase {
         document.put(field, value);
         IngestDocument ingestDocument = RandomDocumentPicks.randomIngestDocument(random(), document);
 
-        LangDetectProcessor processor = new LangDetectProcessor.Factory().create(Collections.emptyMap(), randomAlphaOfLength(10), config);
+        Processor processor = new LangDetectProcessor.Factory().create(Collections.emptyMap(), randomAlphaOfLength(10), "desc", config);
         return processor.execute(ingestDocument).getSourceAndMetadata();
     }
 

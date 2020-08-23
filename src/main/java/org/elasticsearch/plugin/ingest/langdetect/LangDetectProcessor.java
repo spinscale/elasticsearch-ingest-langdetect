@@ -44,7 +44,7 @@ public class LangDetectProcessor extends AbstractProcessor {
 
     public LangDetectProcessor(String tag, String field, String targetField, ByteSizeValue maxLength, boolean ignoreMissing)
             throws IOException {
-        super(tag);
+        super(tag, "Ingest processor doing language detection for fields");
         this.field = field;
         this.targetField = targetField;
         this.maxLength = maxLength;
@@ -87,8 +87,8 @@ public class LangDetectProcessor extends AbstractProcessor {
         private static final ByteSizeValue DEFAULT_MAX_LENGTH = new ByteSizeValue(10, ByteSizeUnit.KB);
 
         @Override
-        public LangDetectProcessor create(Map<String, Processor.Factory> factories, String tag, Map<String, Object> config)
-                throws Exception {
+        public Processor create(Map<String, Processor.Factory> processorFactories, String tag, String description,
+                                Map<String, Object> config) throws Exception {
             String field = readStringProperty(TYPE, tag, config, "field");
             String targetField = readStringProperty(TYPE, tag, config, "target_field");
             String maxLengthStr = readOptionalStringProperty(TYPE, tag, config, "max_length");
