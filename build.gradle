@@ -52,6 +52,11 @@ thirdPartyAudit.enabled = false
 validateNebulaPom.enabled = false
 licenseHeaders.enabled = false
 
+// ignore javadoc warnings for now
+tasks.withType(Javadoc) {
+  options.addStringOption('Xdoclint:none', '-quiet')
+}
+
 githubRelease.doFirst {
   if (!System.getProperty('GITHUB_TOKEN', '')) {
     throw new Exception('Missing property GITHUB_TOKEN')
