@@ -14,7 +14,7 @@ buildscript {
 
 plugins {
   id "co.riiid.gradle" version "0.4.2"
-  id "com.github.ben-manes.versions" version '0.33.0'
+  id "com.github.ben-manes.versions" version '0.36.0'
 }
 
 group = 'de.spinscale.elasticsearch.plugin'
@@ -23,8 +23,7 @@ version = "${elasticsearchVersion}.1-SNAPSHOT"
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'elasticsearch.esplugin'
-apply plugin: 'elasticsearch.testclusters'
-apply plugin: 'elasticsearch.rest-resources'
+apply plugin: 'elasticsearch.yaml-rest-test'
 
 // license of this project
 licenseFile = rootProject.file('LICENSE.txt')
@@ -45,12 +44,16 @@ esplugin {
 dependencies {
   compile 'com.youcruit.com.cybozu.labs:langdetect:1.1.2-20151117'
   compile 'net.arnx:jsonic:1.3.10'
+  // the yaml tests require a log4j2 dependency, otherwise a dependency is thrown on startup
+  yamlRestTestImplementation 'org.apache.logging.log4j:log4j-core:2.11.1'
 }
 
 dependencyLicenses.enabled = false
 thirdPartyAudit.enabled = false
 validateNebulaPom.enabled = false
 licenseHeaders.enabled = false
+// added in 7.10 to allow for build
+loggerUsageCheck.enabled = false
 
 // ignore javadoc warnings for now
 tasks.withType(Javadoc) {

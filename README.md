@@ -10,6 +10,7 @@ Note that Elasticsearch has native support for langdetection nowadays using the
 
 | ES    | Command |
 | ----- | ------- |
+| 7.10.0 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/7.10.0.1/ingest-langdetect-7.10.0.1.zip` |
 | 7.9.3 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/7.9.3.1/ingest-langdetect-7.9.3.1.zip` |
 | 7.9.2 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/7.9.2.1/ingest-langdetect-7.9.2.1.zip` |
 | 7.9.1 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/7.9.1.1/ingest-langdetect-7.9.1.1.zip` |
@@ -36,6 +37,7 @@ Note that Elasticsearch has native support for langdetection nowadays using the
 | 7.1.0 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/7.1.0.1/ingest-langdetect-7.1.0.1.zip` |
 | 7.0.1 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/7.0.1.1/ingest-langdetect-7.0.1.1.zip` |
 | 7.0.0 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/7.0.0.1/ingest-langdetect-7.0.0.1.zip` |
+| 6.8.13 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/6.8.13.1/ingest-langdetect-6.8.13.1.zip` |
 | 6.8.12 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/6.8.12.1/ingest-langdetect-6.8.12.1.zip` |
 | 6.8.11 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/6.8.11.1/ingest-langdetect-6.8.11.1.zip` |
 | 6.8.10 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/6.8.10.1/ingest-langdetect-6.8.10.1.zip` |
