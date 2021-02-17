@@ -1,11 +1,6 @@
 import java.nio.file.Files
 
 buildscript {
-  repositories {
-    mavenLocal()
-    mavenCentral()
-  }
-
   dependencies {
     classpath "org.elasticsearch.gradle:build-tools:${elasticsearchVersion}"
   }
@@ -14,6 +9,11 @@ buildscript {
 plugins {
   id "co.riiid.gradle" version "0.4.2"
   id "com.github.ben-manes.versions" version '0.36.0'
+}
+
+repositories {
+  mavenLocal()
+  mavenCentral()
 }
 
 group = 'de.spinscale.elasticsearch.plugin'
@@ -39,6 +39,8 @@ esplugin {
   noticeFile rootProject.file('NOTICE.txt')
 }
 
+validateNebulaPom.enabled = false
+
 // In this section you declare the dependencies for your production and test code
 dependencies {
   compile 'com.youcruit.com.cybozu.labs:langdetect:1.1.2-20151117'
@@ -46,13 +48,6 @@ dependencies {
   // the yaml tests require a log4j2 dependency, otherwise a dependency is thrown on startup
   yamlRestTestImplementation 'org.apache.logging.log4j:log4j-core:2.11.1'
 }
-
-dependencyLicenses.enabled = false
-thirdPartyAudit.enabled = false
-validateNebulaPom.enabled = false
-licenseHeaders.enabled = false
-// added in 7.10 to allow for build
-loggerUsageCheck.enabled = false
 
 // ignore javadoc warnings for now
 tasks.withType(Javadoc) {
