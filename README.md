@@ -6,6 +6,7 @@ Uses the [langdetect](https://github.com/YouCruit/language-detection/) plugin to
 
 | ES    | Command |
 | ----- | ------- |
+| 6.8.14 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/6.8.14.1/ingest-langdetect-6.8.14.1.zip` |
 | 6.8.13 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/6.8.13.1/ingest-langdetect-6.8.13.1.zip` |
 | 6.8.12 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/6.8.12.1/ingest-langdetect-6.8.12.1.zip` |
 | 6.8.11 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/6.8.11.1/ingest-langdetect-6.8.11.1.zip` |
