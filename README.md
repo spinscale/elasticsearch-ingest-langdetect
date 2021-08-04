@@ -10,6 +10,7 @@ Note that Elasticsearch has native support for langdetection nowadays using the
 
 | ES    | Command |
 | ----- | ------- |
+| 7.14.0 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/7.14.0.1/ingest-langdetect-7.14.0.1.zip` |
 | 7.13.4 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/7.13.4.1/ingest-langdetect-7.13.4.1.zip` |
 | 7.13.3 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/7.13.3.1/ingest-langdetect-7.13.3.1.zip` |
 | 7.13.2 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/7.13.2.1/ingest-langdetect-7.13.2.1.zip` |
