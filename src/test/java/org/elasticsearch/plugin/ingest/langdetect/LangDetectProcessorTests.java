@@ -25,6 +25,7 @@ import org.elasticsearch.ingest.IngestDocument;
 import org.elasticsearch.ingest.Processor;
 import org.elasticsearch.ingest.RandomDocumentPicks;
 import org.elasticsearch.test.ESTestCase;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
 import java.util.Collections;
@@ -42,6 +43,11 @@ public class LangDetectProcessorTests extends ESTestCase {
         Settings settings = Settings.builder().put("path.home", createTempDir()).build();
         Environment environment = new Environment(settings, createTempDir());
         SecureDetectorFactory.loadProfileFromClassPath(environment);
+    }
+
+    @AfterClass
+    public static void done() {
+        System.out.println("DONE");
     }
 
     public void testThatProcessorWorks() throws Exception {

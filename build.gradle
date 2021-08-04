@@ -22,12 +22,12 @@ version = "${elasticsearchVersion}.1-SNAPSHOT"
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'elasticsearch.esplugin'
-apply plugin: 'elasticsearch.yaml-rest-test'
+//apply plugin: 'elasticsearch.yaml-rest-test'
 
 // license of this project
-licenseFile = rootProject.file('LICENSE.txt')
+//licenseFile = rootProject.file('LICENSE.txt')
 // copyright notices
-noticeFile = rootProject.file('NOTICE.txt')
+//noticeFile = rootProject.file('NOTICE.txt')
 
 esplugin {
   name 'ingest-langdetect'
@@ -39,14 +39,14 @@ esplugin {
   noticeFile rootProject.file('NOTICE.txt')
 }
 
-validateElasticPom.enabled = false
+//validateElasticPom.enabled = false
 
 // In this section you declare the dependencies for your production and test code
 dependencies {
   implementation 'com.youcruit.com.cybozu.labs:langdetect:1.1.2-20151117'
   implementation 'net.arnx:jsonic:1.3.10'
   // the yaml tests require a log4j2 dependency, otherwise a dependency is thrown on startup
-  yamlRestTestImplementation 'org.apache.logging.log4j:log4j-core:2.11.1'
+  runtimeOnly 'org.apache.logging.log4j:log4j-core:2.11.1'
 }
 
 // ignore javadoc warnings for now
