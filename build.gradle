@@ -22,12 +22,18 @@ version = "${elasticsearchVersion}.1-SNAPSHOT"
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'elasticsearch.esplugin'
-//apply plugin: 'elasticsearch.yaml-rest-test'
+apply plugin: 'elasticsearch.yaml-rest-test'
 
 // license of this project
 //licenseFile = rootProject.file('LICENSE.txt')
 // copyright notices
 //noticeFile = rootProject.file('NOTICE.txt')
+
+// remove when 7.14.1 is released
+test.systemProperties 'gradle.dist.lib': "${gradle.gradleHomeDir}/lib",
+        'gradle.worker.jar': "${gradle.gradleUserHomeDir}/caches/${gradle.gradleVersion}/workerMain/gradle-worker.jar",
+        'tests.gradle': 'true',
+        'tests.task': test.path
 
 esplugin {
   name 'ingest-langdetect'
