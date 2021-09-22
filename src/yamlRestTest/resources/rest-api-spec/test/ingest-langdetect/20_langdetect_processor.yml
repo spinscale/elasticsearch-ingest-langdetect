@@ -20,7 +20,6 @@
   - do:
       index:
         index: test
-        type: test
         id: 1
         pipeline: "my_pipeline"
         body: { field1: "This is hopefully an english text" }
@@ -28,7 +27,6 @@
   - do:
       get:
         index: test
-        type: test
         id: 1
   - match: { _source.field1: "This is hopefully an english text" }
   - match: { _source.field1_language: "en" }

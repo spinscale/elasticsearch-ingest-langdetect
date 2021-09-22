@@ -40,6 +40,16 @@ esplugin {
   noticeFile = rootProject.file('NOTICE.txt')
 }
 
+// remove me after alpha-2 release
+configurations {
+  resolveableCompileOnly {
+    exclude(group: 'org.elasticsearch', module: 'elasticsearch-lz4')
+  }
+  implementation {
+    exclude(group: 'org.elasticsearch', module: 'elasticsearch-lz4')
+  }
+}
+
 // In this section you declare the dependencies for your production and test code
 dependencies {
   implementation 'com.youcruit.com.cybozu.labs:langdetect:1.1.2-20151117'
