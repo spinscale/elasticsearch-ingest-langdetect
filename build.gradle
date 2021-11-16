@@ -32,6 +32,8 @@ apply plugin: 'idea'
 apply plugin: 'elasticsearch.esplugin'
 apply plugin: 'elasticsearch.testclusters'
 
+sourceCompatibility = '11'
+
 esplugin {
   name = 'ingest-langdetect'
   description = 'Ingest processor doing language detection for fields'
