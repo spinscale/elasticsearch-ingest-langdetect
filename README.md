@@ -10,6 +10,7 @@ Note that Elasticsearch has native support for langdetection nowadays using the
 
 | ES    | Command |
 | ----- | ------- |
+| 7.16.1 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/7.16.1.1/ingest-langdetect-7.16.1.1.zip` |
 | 7.16.0 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/7.16.0.1/ingest-langdetect-7.16.0.1.zip` |
 | 7.15.2 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/7.15.2.1/ingest-langdetect-7.15.2.1.zip` |
 | 7.15.1 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/7.15.1.1/ingest-langdetect-7.15.1.1.zip` |
@@ -56,6 +57,7 @@ Note that Elasticsearch has native support for langdetection nowadays using the
 | 7.1.0 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/7.1.0.1/ingest-langdetect-7.1.0.1.zip` |
 | 7.0.1 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/7.0.1.1/ingest-langdetect-7.0.1.1.zip` |
 | 7.0.0 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/7.0.0.1/ingest-langdetect-7.0.0.1.zip` |
+| 6.8.20 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/6.8.20.1/ingest-langdetect-6.8.20.1.zip` |
 | 6.8.19 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/6.8.19.1/ingest-langdetect-6.8.19.1.zip` |
 | 6.8.18 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/6.8.18.1/ingest-langdetect-6.8.18.1.zip` |
 | 6.8.17 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/6.8.17.1/ingest-langdetect-6.8.17.1.zip` |
