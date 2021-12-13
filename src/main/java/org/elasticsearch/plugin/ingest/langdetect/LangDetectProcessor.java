@@ -55,7 +55,7 @@ public class LangDetectProcessor extends AbstractProcessor {
     @Override
     public IngestDocument execute(IngestDocument ingestDocument) throws Exception {
         Detector detector = DetectorFactory.create();
-        detector.setMaxTextLength(maxLength.bytesAsInt());
+        detector.setMaxTextLength(Long.valueOf(maxLength.getBytes()).intValue());
 
         String content;
         try {

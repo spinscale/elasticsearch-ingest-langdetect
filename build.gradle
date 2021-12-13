@@ -23,6 +23,10 @@ plugins {
 
 repositories {
   mavenCentral()
+  // only needed for beta1, can be removed after upgrading to newer version
+  maven {
+    url = 'https://s3.amazonaws.com/download.elasticsearch.org/lucenesnapshots/cc2a31f2be8'
+  }
 }
 
 group = 'de.spinscale.elasticsearch.plugin'
