@@ -122,7 +122,8 @@ tasks.register('yamlRestTest', StandaloneRestIntegTestTask) { testTask ->
     testTask.setTestClassesDirs(sourceSets.yamlRestTest.getOutput().getClassesDirs())
     testTask.setClasspath(sourceSets.yamlRestTest.getRuntimeClasspath())
 
-
+    // lingua requires a ton of heap to load all the models!
+    System.setProperty("tests.heap.size", "3g")
     SystemPropertyCommandLineArgumentProvider nonInputProperties = new SystemPropertyCommandLineArgumentProvider()
     nonInputProperties.systemProperty("tests.rest.cluster", "${-> String.join(",", cluster.getAllHttpSocketURI())}")
     nonInputProperties.systemProperty("tests.cluster", "${-> String.join(",", cluster.getAllTransportPortURI())}")
@@ -136,6 +137,7 @@ check.dependsOn 'yamlRestTest'
 
 dependencies {
   implementation 'com.youcruit.com.cybozu.labs:langdetect:1.1.2-20151117'
+  implementation 'com.github.pemistahl:lingua:1.1.1'
   implementation 'net.arnx:jsonic:1.3.10'
   // the yaml tests require a log4j2 dependency, otherwise a dependency is thrown on startup
   runtimeOnly 'org.apache.logging.log4j:log4j-core:2.11.1'

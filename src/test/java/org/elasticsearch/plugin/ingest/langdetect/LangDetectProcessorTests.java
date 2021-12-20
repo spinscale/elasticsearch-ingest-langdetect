@@ -19,12 +19,16 @@ package org.elasticsearch.plugin.ingest.langdetect;
 
 import com.cybozu.labs.langdetect.LangDetectException;
 import com.cybozu.labs.langdetect.SecureDetectorFactory;
+import com.github.pemistahl.lingua.api.Language;
+import com.github.pemistahl.lingua.api.LanguageDetector;
+import com.github.pemistahl.lingua.api.LanguageDetectorBuilder;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.env.Environment;
 import org.elasticsearch.ingest.IngestDocument;
 import org.elasticsearch.ingest.Processor;
 import org.elasticsearch.ingest.RandomDocumentPicks;
 import org.elasticsearch.test.ESTestCase;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
 import java.util.Collections;
@@ -37,15 +41,34 @@ import static org.hamcrest.Matchers.not;
 
 public class LangDetectProcessorTests extends ESTestCase {
 
+    private static LanguageDetector languageDetector;
+
     @BeforeClass
     public static void loadProfiles() throws Exception {
         Settings settings = Settings.builder().put("path.home", createTempDir()).build();
         Environment environment = new Environment(settings, createTempDir());
         SecureDetectorFactory.loadProfileFromClassPath(environment);
+
+        // instead of loading all languages, reduce this to the minimum to keep the test fast!
+        languageDetector = LanguageDetectorBuilder.fromLanguages(Language.ENGLISH, Language.GERMAN).build();
+    }
+
+    @AfterClass
+    public static void stopLanguageDetector() {
+        languageDetector.destroy();
     }
 
     public void testThatProcessorWorks() throws Exception {
         Map<String, Object> data = ingestDocument(config("source_field", "language", false),
+                "source_field", "This is hopefully an english text, that will be detected.");
+
+        assertThat(data, hasEntry("language", "en"));
+    }
+
+    public void testThatLinguaImplementationWorks() throws Exception {
+        final Map<String, Object> config = config("source_field", "language", false);
+        config.put("implementation", "lingua");
+        Map<String, Object> data = ingestDocument(config,
                 "source_field", "This is hopefully an english text, that will be detected.");
 
         assertThat(data, hasEntry("language", "en"));
@@ -95,7 +118,8 @@ public class LangDetectProcessorTests extends ESTestCase {
         document.put(field, value);
         IngestDocument ingestDocument = RandomDocumentPicks.randomIngestDocument(random(), document);
 
-        Processor processor = new LangDetectProcessor.Factory().create(Collections.emptyMap(), randomAlphaOfLength(10), "desc", config);
+        Processor processor = new LangDetectProcessor.Factory(() -> languageDetector)
+                .create(Collections.emptyMap(), randomAlphaOfLength(10), "desc", config);
         return processor.execute(ingestDocument).getSourceAndMetadata();
     }
 

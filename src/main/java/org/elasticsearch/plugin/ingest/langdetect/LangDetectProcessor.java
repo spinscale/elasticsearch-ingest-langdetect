@@ -19,15 +19,19 @@ package org.elasticsearch.plugin.ingest.langdetect;
 
 import com.cybozu.labs.langdetect.Detector;
 import com.cybozu.labs.langdetect.DetectorFactory;
+import com.github.pemistahl.lingua.api.Language;
+import com.github.pemistahl.lingua.api.LanguageDetector;
 import org.elasticsearch.common.Strings;
 import org.elasticsearch.common.unit.ByteSizeUnit;
 import org.elasticsearch.common.unit.ByteSizeValue;
+import org.elasticsearch.core.CheckedFunction;
 import org.elasticsearch.ingest.AbstractProcessor;
 import org.elasticsearch.ingest.IngestDocument;
 import org.elasticsearch.ingest.Processor;
 
-import java.io.IOException;
+import java.util.Locale;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import static org.elasticsearch.ingest.ConfigurationUtils.readBooleanProperty;
 import static org.elasticsearch.ingest.ConfigurationUtils.readOptionalStringProperty;
@@ -39,24 +43,20 @@ public class LangDetectProcessor extends AbstractProcessor {
 
     private final String field;
     private final String targetField;
-    private final ByteSizeValue maxLength;
     private final boolean ignoreMissing;
+    private final CheckedFunction<String, String, Exception> detector;
 
     public LangDetectProcessor(String tag, String description, String field, String targetField,
-                               ByteSizeValue maxLength, boolean ignoreMissing)
-            throws IOException {
+                               boolean ignoreMissing, CheckedFunction<String, String, Exception> detector) {
         super(tag, description);
         this.field = field;
         this.targetField = targetField;
-        this.maxLength = maxLength;
         this.ignoreMissing = ignoreMissing;
+        this.detector = detector;
     }
 
     @Override
     public IngestDocument execute(IngestDocument ingestDocument) throws Exception {
-        Detector detector = DetectorFactory.create();
-        detector.setMaxTextLength(Long.valueOf(maxLength.getBytes()).intValue());
-
         String content;
         try {
             content = ingestDocument.getFieldValue(field, String.class);
@@ -70,9 +70,7 @@ public class LangDetectProcessor extends AbstractProcessor {
             return ingestDocument;
         }
 
-        detector.append(content);
-        String language = detector.detect();
-
+        String language = detector.apply(content);
         ingestDocument.setFieldValue(targetField, language);
 
         return ingestDocument;
@@ -86,6 +84,11 @@ public class LangDetectProcessor extends AbstractProcessor {
     public static final class Factory implements Processor.Factory {
 
         private static final ByteSizeValue DEFAULT_MAX_LENGTH = new ByteSizeValue(10, ByteSizeUnit.KB);
+        private final Supplier<LanguageDetector> languageDetector;
+
+        public Factory(Supplier<LanguageDetector> languageDetector) {
+            this.languageDetector = languageDetector;
+        }
 
         @Override
         public Processor create(Map<String, Processor.Factory> processorFactories, String tag, String description,
@@ -93,12 +96,30 @@ public class LangDetectProcessor extends AbstractProcessor {
             String field = readStringProperty(TYPE, tag, config, "field");
             String targetField = readStringProperty(TYPE, tag, config, "target_field");
             String maxLengthStr = readOptionalStringProperty(TYPE, tag, config, "max_length");
-
+            String implementation = readOptionalStringProperty(TYPE, tag, config, "implementation");
             ByteSizeValue maxLength = ByteSizeValue.parseBytesSizeValue(maxLengthStr, DEFAULT_MAX_LENGTH, "max_length");
-
             boolean ignoreMissing = readBooleanProperty(TYPE, tag, config, "ignore_missing", false);
 
-            return new LangDetectProcessor(tag, description, field, targetField, maxLength, ignoreMissing);
+            CheckedFunction<String, String, Exception> langDetector;
+            if ("lingua".equals(implementation)) {
+                langDetector = input -> {
+                    if (maxLength != null && input.length() > maxLength.getBytes()) {
+                        input = input.substring(0, Long.valueOf(maxLength.getBytes()).intValue());
+                    }
+
+                    Language detectedLanguage = languageDetector.get().detectLanguageOf(input);
+                    return detectedLanguage.getIsoCode639_1().name().toLowerCase(Locale.ROOT);
+                };
+            } else {
+                langDetector = input -> {
+                    Detector detector = DetectorFactory.create();
+                    detector.setMaxTextLength(Long.valueOf(maxLength.getBytes()).intValue());
+                    detector.append(input);
+                    return detector.detect();
+                };
+            }
+
+            return new LangDetectProcessor(tag, description, field, targetField, ignoreMissing, langDetector);
         }
     }
 }

@@ -19,6 +19,8 @@ package org.elasticsearch.plugin.ingest.langdetect;
 
 import com.cybozu.labs.langdetect.LangDetectException;
 import com.cybozu.labs.langdetect.SecureDetectorFactory;
+import com.github.pemistahl.lingua.api.LanguageDetector;
+import com.github.pemistahl.lingua.api.LanguageDetectorBuilder;
 import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.ingest.Processor;
 import org.elasticsearch.plugins.IngestPlugin;
@@ -28,8 +30,12 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Supplier;
 
 public class IngestLangDetectPlugin extends Plugin implements IngestPlugin {
+
+    private AtomicReference<LanguageDetector> languageDetector = new AtomicReference<>();
 
     @Override
     public Map<String, Processor.Factory> getProcessors(Processor.Parameters parameters) {
@@ -39,8 +45,32 @@ public class IngestLangDetectPlugin extends Plugin implements IngestPlugin {
             throw new ElasticsearchException(e);
         }
 
+        // this lazy loads the lingua supplier, as it needs crazy amounts of memory, which should only be used, if the user uses
+        // the lingua implementation in one of the processors
+        Supplier<LanguageDetector> supplier = () -> {
+            final LanguageDetector languageDetector = this.languageDetector.get();
+            if (languageDetector == null) {
+                final LanguageDetector detector = LanguageDetectorBuilder.fromAllLanguages().withPreloadedLanguageModels().build();
+                final boolean updatedSuccessfully = this.languageDetector.compareAndSet(null, detector);
+                if (updatedSuccessfully == false) {
+                    detector.destroy();
+                }
+                return this.languageDetector.get();
+            }
+            return languageDetector;
+        };
+
         Map<String, Processor.Factory> factoryMap = new HashMap<>(1);
-        factoryMap.put(LangDetectProcessor.TYPE, new LangDetectProcessor.Factory());
+        factoryMap.put(LangDetectProcessor.TYPE, new LangDetectProcessor.Factory(supplier));
         return factoryMap;
+    }
+
+    @Override
+    public void close() throws IOException {
+        super.close();
+        final LanguageDetector detector = this.languageDetector.get();
+        if (detector != null) {
+            detector.destroy();
+        }
     }
 }

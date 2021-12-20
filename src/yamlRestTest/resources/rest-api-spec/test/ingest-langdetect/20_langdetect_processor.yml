@@ -12,6 +12,13 @@
                   "field" : "field1",
                   "target_field" : "field1_language"
                 }
+              },
+              {
+                "langdetect" : {
+                  "field" : "field1",
+                  "target_field" : "field1_lingua",
+                  "implementation" : "lingua"
+                }
               }
             ]
           }
@@ -30,4 +37,4 @@
         id: 1
   - match: { _source.field1: "This is hopefully an english text" }
   - match: { _source.field1_language: "en" }
-
+  - match: { _source.field1_lingua: "en" }
