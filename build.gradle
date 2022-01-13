@@ -123,7 +123,7 @@ tasks.register('yamlRestTest', StandaloneRestIntegTestTask) { testTask ->
     testTask.setClasspath(sourceSets.yamlRestTest.getRuntimeClasspath())
 
     // lingua requires a ton of heap to load all the models!
-    System.setProperty("tests.heap.size", "3g")
+    System.setProperty("tests.heap.size", "4g")
     SystemPropertyCommandLineArgumentProvider nonInputProperties = new SystemPropertyCommandLineArgumentProvider()
     nonInputProperties.systemProperty("tests.rest.cluster", "${-> String.join(",", cluster.getAllHttpSocketURI())}")
     nonInputProperties.systemProperty("tests.cluster", "${-> String.join(",", cluster.getAllTransportPortURI())}")
