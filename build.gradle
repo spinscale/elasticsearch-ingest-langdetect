@@ -18,7 +18,7 @@ buildscript {
 plugins {
   // the old co.riiid.gradle is not gradle 7.0 compatible
   id "com.github.humblerookie.gradle" version "0.4.4"
-  id "com.github.ben-manes.versions" version '0.36.0'
+  id "com.github.ben-manes.versions" version '0.41.0'
 }
 
 repositories {
