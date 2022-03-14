@@ -92,6 +92,8 @@ githubRelease.doFirst {
   }
 
   def currentVersion = version.replace('-SNAPSHOT', '')
+  def filename = "build/distribution/ingest-langdetect-${currentVersion}.zip"
+  Files.copy(file("build/distribution/elasticsearch-ingest-langdetect.zip").toPath(), file(filename).toPath())
 
   // configuration
   github {
@@ -99,7 +101,7 @@ githubRelease.doFirst {
     repo = 'elasticsearch-ingest-langdetect'
     token = System.getProperty('GITHUB_TOKEN')
     tagName = currentVersion
-    assets = [ "build/distribution/elasticsearch-ingest-langdetect.zip" ]
+    assets = [ filename ]
     targetCommitish = 'main'
   }
 }
