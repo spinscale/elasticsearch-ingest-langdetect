@@ -91,13 +91,7 @@ githubRelease.doFirst {
     throw new Exception('Missing property GITHUB_TOKEN')
   }
 
-  // check if zip file is there
-  assert file("build/distributions/elasticsearch-ingest-langdetect.zip").exists()
-
-  // rename zip file
   def currentVersion = version.replace('-SNAPSHOT', '')
-  def filename = "build/distributions/ingest-langdetect-${currentVersion}.zip"
-  Files.copy(file("build/distributions/elasticsearch-ingest-langdetect.zip").toPath(), file(filename).toPath())
 
   // configuration
   github {
@@ -105,13 +99,9 @@ githubRelease.doFirst {
     repo = 'elasticsearch-ingest-langdetect'
     token = System.getProperty('GITHUB_TOKEN')
     tagName = currentVersion
-    assets = [ filename ]
+    assets = [ "build/distributions/elasticsearch-ingest-langdetect.zip" ]
     targetCommitish = 'main'
   }
-}
-
-configurations {
-  testCompile.extendsFrom compileOnly
 }
 
 dependencies {
