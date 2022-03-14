@@ -99,7 +99,7 @@ githubRelease.doFirst {
     repo = 'elasticsearch-ingest-langdetect'
     token = System.getProperty('GITHUB_TOKEN')
     tagName = currentVersion
-    assets = [ "build/distributions/elasticsearch-ingest-langdetect.zip" ]
+    assets = [ "build/distribution/elasticsearch-ingest-langdetect.zip" ]
     targetCommitish = 'main'
   }
 }
