@@ -1,2 +1,2 @@
 Alexander Reelsen
-Copyright 2016-2017 Alexander Reelsen
+Copyright 2016-2022 Alexander Reelsen

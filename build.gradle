@@ -1,19 +1,5 @@
 import java.nio.file.Files
-import org.elasticsearch.gradle.testclusters.StandaloneRestIntegTestTask
-import org.elasticsearch.gradle.test.SystemPropertyCommandLineArgumentProvider;
-import org.gradle.api.tasks.Input;
-import org.gradle.process.CommandLineArgumentProvider;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-
-buildscript {
-  dependencies {
-    classpath "org.elasticsearch.gradle:build-tools:${elasticsearchVersion}"
-  }
-}
+import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
   // the old co.riiid.gradle is not gradle 7.0 compatible
@@ -23,10 +9,6 @@ plugins {
 
 repositories {
   mavenCentral()
-  // only needed for beta1, can be removed after upgrading to newer version
-  maven {
-    url = 'https://s3.amazonaws.com/download.elasticsearch.org/lucenesnapshots/cc2a31f2be8'
-  }
 }
 
 group = 'de.spinscale.elasticsearch.plugin'
@@ -34,28 +16,70 @@ version = "${elasticsearchVersion}.1-SNAPSHOT"
 
 apply plugin: 'java'
 apply plugin: 'idea'
-apply plugin: 'elasticsearch.esplugin'
-apply plugin: 'elasticsearch.testclusters'
 
-sourceCompatibility = '11'
+sourceCompatibility = '17'
 
-esplugin {
-  name = 'ingest-langdetect'
-  description = 'Ingest processor doing language detection for fields'
-  classname = 'org.elasticsearch.plugin.ingest.langdetect.IngestLangDetectPlugin'
-  licenseFile = rootProject.file('LICENSE.txt')
-  noticeFile = rootProject.file('NOTICE.txt')
+task pluginDescriptor(type: Copy) {
+  from('src/main/resources') {
+    include '**/*.properties'
+    filter(ReplaceTokens, tokens: [
+            'version': version.replace('-SNAPSHOT', '').toString(),
+            'elasticsearchVersion': elasticsearchVersion.toString()
+    ])
+  }
+  into 'build/libs'
 }
 
-// remove me after alpha-2 release
-configurations {
-  resolveableCompileOnly {
-    exclude(group: 'org.elasticsearch', module: 'elasticsearch-lz4')
-  }
-  implementation {
-    exclude(group: 'org.elasticsearch', module: 'elasticsearch-lz4')
+task copyDependencies(type: Copy) {
+  into 'build/libs'
+  from configurations.default
+  from 'NOTICE.txt'
+  from 'LICENSE.txt'
+}
+
+task packageDistribution(type: Zip) {
+  archiveFileName = "elasticsearch-ingest-langdetect.zip"
+  destinationDirectory = layout.buildDirectory.dir('distribution')
+
+  from layout.buildDirectory.dir("libs")
+}
+
+task builderDockerImage(type: Exec) {
+  commandLine 'docker', 'build', '.'
+}
+
+// split tests between unit and integration tests
+def testReporter = { desc, result ->
+  if (!desc.parent) {
+    def duration = java.time.Duration.ofMillis(result.endTime - result.startTime)
+    println "\nTest summary: ${result.resultType},  ${result.testCount} tests, " +
+            "${result.successfulTestCount} succeeded, " +
+            "${result.failedTestCount} failed, " +
+            "${result.skippedTestCount} skipped, took ${duration}"
   }
 }
+
+tasks.named('test') {
+  useJUnitPlatform {
+    excludeTags 'slow'
+  }
+
+  afterSuite testReporter
+}
+
+task integrationTest(type: Test) {
+  useJUnitPlatform {
+    includeTags 'slow'
+  }
+
+  afterSuite testReporter
+}
+
+packageDistribution.dependsOn 'pluginDescriptor'
+packageDistribution.dependsOn 'copyDependencies'
+packageDistribution.dependsOn 'jar'
+builderDockerImage.dependsOn 'packageDistribution'
+integrationTest.dependsOn 'builderDockerImage'
 
 // ignore javadoc warnings for now
 tasks.withType(Javadoc) {
@@ -68,12 +92,12 @@ githubRelease.doFirst {
   }
 
   // check if zip file is there
-  assert file("build/distributions/ingest-langdetect-${version}.zip").exists()
+  assert file("build/distributions/elasticsearch-ingest-langdetect.zip").exists()
 
   // rename zip file
   def currentVersion = version.replace('-SNAPSHOT', '')
   def filename = "build/distributions/ingest-langdetect-${currentVersion}.zip"
-  Files.copy(file("build/distributions/ingest-langdetect-${version}.zip").toPath(), file(filename).toPath())
+  Files.copy(file("build/distributions/elasticsearch-ingest-langdetect.zip").toPath(), file(filename).toPath())
 
   // configuration
   github {
@@ -86,63 +110,26 @@ githubRelease.doFirst {
   }
 }
 
-// setup yaml rest tests
-testClusters {
-  yamlRestTest
-}
-
-sourceSets {
-  yamlRestTest
-}
-
 configurations {
-  yamlRestTestImplementation.extendsFrom testImplementation
-  yamlRestTestRuntimeOnly.extendsFrom testRuntimeOnly
-  restTestSpecs
+  testCompile.extendsFrom compileOnly
 }
-
-tasks.register('copyRestTestSpecs', Copy) {
-  from zipTree(configurations.restTestSpecs.singleFile)
-  into "$buildDir/restResources/restspec"
-}
-
-TaskProvider<Zip> bundle = project.getTasks().withType(Zip.class).named("bundlePlugin");
-
-// Register rest resources with source set
-sourceSets.yamlRestTest.getOutput().dir("$buildDir/restResources/restspec");
-
-tasks.register('yamlRestTest', StandaloneRestIntegTestTask) { testTask ->
-    testTask.dependsOn(bundle, 'copyRestTestSpecs')
-
-    def cluster = testClusters.yamlRestTest
-    cluster.plugin(bundle.flatMap(AbstractArchiveTask::getArchiveFile))
-    testTask.useCluster(testClusters.yamlRestTest)
-
-    testTask.mustRunAfter(project.getTasks().named("test"))
-    testTask.setTestClassesDirs(sourceSets.yamlRestTest.getOutput().getClassesDirs())
-    testTask.setClasspath(sourceSets.yamlRestTest.getRuntimeClasspath())
-
-    // lingua requires a ton of heap to load all the models!
-    System.setProperty("tests.heap.size", "4g")
-    SystemPropertyCommandLineArgumentProvider nonInputProperties = new SystemPropertyCommandLineArgumentProvider()
-    nonInputProperties.systemProperty("tests.rest.cluster", "${-> String.join(",", cluster.getAllHttpSocketURI())}")
-    nonInputProperties.systemProperty("tests.cluster", "${-> String.join(",", cluster.getAllTransportPortURI())}")
-    nonInputProperties.systemProperty("tests.clustername", "${-> cluster.getName()}")
-    testTask.getJvmArgumentProviders().add(nonInputProperties)
-    testTask.systemProperty("tests.rest.load_packaged", Boolean.FALSE.toString())
-}
-
-// this is a bit of a hack to make sure we run the test tests when releasing...
-check.dependsOn 'yamlRestTest'
 
 dependencies {
+  def junitVersion = '5.8.2'
+
   implementation 'com.youcruit.com.cybozu.labs:langdetect:1.1.2-20151117'
   implementation 'com.github.pemistahl:lingua:1.1.1'
   implementation 'net.arnx:jsonic:1.3.10'
-  // the yaml tests require a log4j2 dependency, otherwise a dependency is thrown on startup
-  runtimeOnly 'org.apache.logging.log4j:log4j-core:2.17.1'
-  testImplementation "org.elasticsearch.test:framework:$elasticsearchVersion"
-  restTestSpecs "org.elasticsearch:rest-api-spec:$elasticsearchVersion"
+  compileOnly "org.elasticsearch:elasticsearch:$elasticsearchVersion"
+
+  testImplementation "org.elasticsearch:elasticsearch:$elasticsearchVersion"
+  testImplementation("org.testcontainers:elasticsearch:1.16.3") {
+    exclude group: 'junit', module: 'junit'
+  }
+  testImplementation "org.testcontainers:junit-jupiter:1.16.3"
+  testImplementation "org.assertj:assertj-core:3.22.0"
+  testImplementation "org.slf4j:slf4j-simple:1.7.36"
+  testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
+  testImplementation "org.junit.jupiter:junit-jupiter-params:${junitVersion}"
+  testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
 }
-
-

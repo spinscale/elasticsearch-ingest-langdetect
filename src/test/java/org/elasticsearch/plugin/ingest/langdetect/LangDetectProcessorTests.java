@@ -26,54 +26,60 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.env.Environment;
 import org.elasticsearch.ingest.IngestDocument;
 import org.elasticsearch.ingest.Processor;
-import org.elasticsearch.ingest.RandomDocumentPicks;
-import org.elasticsearch.test.ESTestCase;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
+import java.nio.file.Path;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.hamcrest.Matchers.hasEntry;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class LangDetectProcessorTests extends ESTestCase {
+public class LangDetectProcessorTests {
 
     private static LanguageDetector languageDetector;
 
-    @BeforeClass
+    @TempDir
+    public static Path folder;
+
+    @BeforeAll
     public static void loadProfiles() throws Exception {
-        Settings settings = Settings.builder().put("path.home", createTempDir()).build();
-        Environment environment = new Environment(settings, createTempDir());
+        Settings settings = Settings.builder().put("path.home", folder).build();
+        Environment environment = new Environment(settings, folder);
         SecureDetectorFactory.loadProfileFromClassPath(environment);
 
         // instead of loading all languages, reduce this to the minimum to keep the test fast!
         languageDetector = LanguageDetectorBuilder.fromLanguages(Language.ENGLISH, Language.GERMAN).build();
     }
 
-    @AfterClass
+    @AfterAll
     public static void stopLanguageDetector() {
         languageDetector.destroy();
     }
 
+    @Test
     public void testThatProcessorWorks() throws Exception {
         Map<String, Object> data = ingestDocument(config("source_field", "language", false),
                 "source_field", "This is hopefully an english text, that will be detected.");
 
-        assertThat(data, hasEntry("language", "en"));
+        assertThat(data).containsEntry("language", "en");
     }
 
+    @Test
     public void testThatLinguaImplementationWorks() throws Exception {
         final Map<String, Object> config = config("source_field", "language", false);
         config.put("implementation", "lingua");
         Map<String, Object> data = ingestDocument(config,
                 "source_field", "This is hopefully an english text, that will be detected.");
 
-        assertThat(data, hasEntry("language", "en"));
+        assertThat(data).containsEntry("language", "en");
     }
 
+    @Test
     public void testMaxLengthConfiguration() throws Exception {
         Map<String, Object> config = config("source_field", "language", false);
         config.put("max_length", "20b");
@@ -89,37 +95,39 @@ public class LangDetectProcessorTests extends ESTestCase {
         Map<String, Object> data = ingestDocument(config,
                 "source_field", "This is hopefully an english text, that will be detected. " + germanText);
 
-        assertThat(data, hasEntry("language", "en"));
+        assertThat(data).containsEntry("language", "en");
     }
 
+    @Test
     public void testIgnoreMissingConfiguration() throws Exception {
         Map<String, Object> data = ingestDocument(config("missing_source_field", "language", true),
                 "source_field", "This is hopefully an english text, that will be detected.");
 
-        assertThat(data, not(hasEntry("language", "en")));
+        assertThat(data).doesNotContainEntry("language", "en");
     }
 
+    @Test
     public void testEmptyString() throws Exception {
-        Map<String, Object> data = ingestDocument(config("source_field", "language", randomBoolean()),"source_field", "");
+        Map<String, Object> data = ingestDocument(config("source_field", "language", true),"source_field", "");
 
-        assertThat(data, not(hasEntry("language", "en")));
+        assertThat(data).doesNotContainEntry("language", "en");
     }
 
+    @Test
     public void testNumbersOnlyThrowsException() throws Exception {
         Map<String, Object> config = config("source_field", "language", false);
-        LangDetectException e = expectThrows(LangDetectException.class,
-                () -> ingestDocument(config, "source_field", "124 56456 546 3432"));
-
-        assertThat(e.getMessage(), is("no features in text"));
+        assertThatThrownBy(() -> ingestDocument(config, "source_field", "124 56456 546 3432"))
+                .isInstanceOf(LangDetectException.class)
+                .hasMessage("no features in text");
     }
 
     private Map<String, Object> ingestDocument(Map<String, Object> config, String field, String value) throws Exception {
         Map<String, Object> document = new HashMap<>();
         document.put(field, value);
-        IngestDocument ingestDocument = RandomDocumentPicks.randomIngestDocument(random(), document);
+        IngestDocument ingestDocument = new IngestDocument(document, Collections.emptyMap());
 
         Processor processor = new LangDetectProcessor.Factory(() -> languageDetector)
-                .create(Collections.emptyMap(), randomAlphaOfLength(10), "desc", config);
+                .create(Collections.emptyMap(), "my-tag", "desc", config);
         return processor.execute(ingestDocument).getSourceAndMetadata();
     }
 
