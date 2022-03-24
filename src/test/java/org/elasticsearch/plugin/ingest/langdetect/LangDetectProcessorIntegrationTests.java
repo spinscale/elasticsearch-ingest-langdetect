@@ -28,7 +28,7 @@ public class LangDetectProcessorIntegrationTests {
             container.addEnv("discovery.type", "single-node");
             container.withEnv("ELASTIC_PASSWORD", "changeme");
             container.withEnv("xpack.security.enabled", "true");
-            container.withEnv("ES_JAVA_OPTS", "-Xms3g -Xmx3g");
+            container.withEnv("ES_JAVA_OPTS", "-Xms4g -Xmx4g");
             container.addExposedPorts(9200);
             container.setWaitStrategy(new LogMessageWaitStrategy().withRegEx(".*(\"message\":\\s?\"started\".*|] started\n$)"));
 

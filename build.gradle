@@ -106,6 +106,8 @@ githubRelease.doFirst {
   }
 }
 
+githubRelease.dependsOn 'packageDistribution'
+
 dependencies {
   def junitVersion = '5.8.2'
 
