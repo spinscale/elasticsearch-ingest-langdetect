@@ -72,6 +72,8 @@ githubRelease.doFirst {
   }
 }
 
+githubRelease.dependsOn assemble
+
 // setup yaml rest tests
 testClusters {
   yamlRestTest
