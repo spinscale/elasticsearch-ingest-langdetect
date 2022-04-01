@@ -10,6 +10,7 @@ Note that Elasticsearch has native support for langdetection nowadays using the
 
 | ES    | Command |
 | ----- | ------- |
+| 8.1.2 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/8.1.2.1/ingest-langdetect-8.1.2.1.zip` |
 | 8.1.1 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/8.1.1.1/ingest-langdetect-8.1.1.1.zip` |
 | 8.1.0 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/8.1.0.1/ingest-langdetect-8.1.0.1.zip` |
 | 8.0.1 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/8.0.1.1/ingest-langdetect-8.0.1.1.zip` |
@@ -17,6 +18,7 @@ Note that Elasticsearch has native support for langdetection nowadays using the
 | 8.0.0-rc1 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/8.0.0-rc1.1/ingest-langdetect-8.0.0-rc1.1.zip` |
 | 8.0.0-beta1 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/8.0.0-beta1.1/ingest-langdetect-8.0.0-beta1.1.zip` |
 | 8.0.0-alpha2 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/8.0.0-alpha2.1/ingest-langdetect-8.0.0-alpha2.1.zip` |
+| 7.17.2 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/7.17.2.1/ingest-langdetect-7.17.2.1.zip` |
 | 7.17.1 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/7.17.1.1/ingest-langdetect-7.17.1.1.zip` |
 | 7.17.0 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/7.17.0.1/ingest-langdetect-7.17.0.1.zip` |
 | 7.16.3 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/7.16.3.1/ingest-langdetect-7.16.3.1.zip` |
