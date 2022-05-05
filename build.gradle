@@ -117,10 +117,12 @@ dependencies {
   compileOnly "org.elasticsearch:elasticsearch:$elasticsearchVersion"
 
   testImplementation "org.elasticsearch:elasticsearch:$elasticsearchVersion"
-  testImplementation("org.testcontainers:elasticsearch:1.16.3") {
+  testImplementation "co.elastic.clients:elasticsearch-java:$elasticsearchVersion"
+  testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.13.2.2'
+  testImplementation('org.testcontainers:elasticsearch:1.17.1') {
     exclude group: 'junit', module: 'junit'
   }
-  testImplementation "org.testcontainers:junit-jupiter:1.16.3"
+  testImplementation 'org.testcontainers:junit-jupiter:1.17.1'
   testImplementation "org.assertj:assertj-core:3.22.0"
   testImplementation "org.slf4j:slf4j-simple:1.7.36"
   testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
