@@ -47,7 +47,7 @@ public class LangDetectProcessorIntegrationTests {
         container.withEnv("xpack.security.enabled", "false");
         container.withEnv("ES_JAVA_OPTS", "-Xms4g -Xmx4g");
         container.addExposedPorts(9200);
-        container.setWaitStrategy(new LogMessageWaitStrategy().withRegEx(".*(\"message\":\\s?\"started\".*|] started\n$)"));
+        container.setWaitStrategy(new LogMessageWaitStrategy().withRegEx(".*(\"message\":\\s?\"started[\"| ].*|] started\n$)"));
 
         container.start();
         container.followOutput(new Slf4jLogConsumer(LoggerFactory.getLogger(LangDetectProcessorIntegrationTests.class)));
