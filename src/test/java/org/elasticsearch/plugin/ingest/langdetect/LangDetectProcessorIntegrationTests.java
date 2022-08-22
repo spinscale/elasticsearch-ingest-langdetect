@@ -11,11 +11,7 @@ import co.elastic.clients.transport.ElasticsearchTransport;
 import co.elastic.clients.transport.rest_client.RestClientTransport;
 import org.apache.http.HttpHost;
 import org.elasticsearch.client.RestClient;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
@@ -47,7 +43,7 @@ public class LangDetectProcessorIntegrationTests {
         container.withEnv("xpack.security.enabled", "false");
         container.withEnv("ES_JAVA_OPTS", "-Xms4g -Xmx4g");
         container.addExposedPorts(9200);
-        container.setWaitStrategy(new LogMessageWaitStrategy().withRegEx(".*(\"message\":\\s?\"started[\"| ].*|] started\n$)"));
+        container.setWaitStrategy(new LogMessageWaitStrategy().withRegEx(".*(\"message\":\\s?\"started[\\s?|\"].*|] started\n$)"));
 
         container.start();
         container.followOutput(new Slf4jLogConsumer(LoggerFactory.getLogger(LangDetectProcessorIntegrationTests.class)));
@@ -92,13 +88,6 @@ public class LangDetectProcessorIntegrationTests {
               "field" : "field1",
               "target_field" : "field1_language"
             }
-          },
-          {
-            "langdetect" : {
-              "field" : "field1",
-              "target_field" : "field1_lingua",
-              "implementation" : "lingua"
-            }
           }
         ]
       }
@@ -122,6 +111,5 @@ public class LangDetectProcessorIntegrationTests {
         GetResponse<Map> getResponse = client.get(b -> b.index("test").id("1"), Map.class);
         Map<String, Object> source = getResponse.source();
         assertThat(source).containsEntry("field1_language", "en");
-        assertThat(source).containsEntry("field1_lingua", "en");
     }
 }

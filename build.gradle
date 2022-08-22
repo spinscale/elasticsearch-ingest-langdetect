@@ -4,7 +4,7 @@ import org.apache.tools.ant.filters.ReplaceTokens
 plugins {
   // the old co.riiid.gradle is not gradle 7.0 compatible
   id "com.github.humblerookie.gradle" version "0.4.4"
-  id "com.github.ben-manes.versions" version '0.41.0'
+  id "com.github.ben-manes.versions" version '0.42.0'
 }
 
 repositories {
@@ -35,6 +35,7 @@ task copyDependencies(type: Copy) {
   from configurations.default
   from 'NOTICE.txt'
   from 'LICENSE.txt'
+  from 'src/main/resources/plugin-security.policy'
 }
 
 task packageDistribution(type: Zip) {
@@ -109,21 +110,20 @@ githubRelease.doFirst {
 githubRelease.dependsOn 'packageDistribution'
 
 dependencies {
-  def junitVersion = '5.8.2'
+  def junitVersion = '5.9.0'
 
   implementation 'com.youcruit.com.cybozu.labs:langdetect:1.1.2-20151117'
-  implementation 'com.github.pemistahl:lingua:1.1.1'
   implementation 'net.arnx:jsonic:1.3.10'
   compileOnly "org.elasticsearch:elasticsearch:$elasticsearchVersion"
 
   testImplementation "org.elasticsearch:elasticsearch:$elasticsearchVersion"
   testImplementation "co.elastic.clients:elasticsearch-java:$elasticsearchVersion"
-  testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.13.2.2'
-  testImplementation('org.testcontainers:elasticsearch:1.17.1') {
+  testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.13.3'
+  testImplementation('org.testcontainers:elasticsearch:1.17.3') {
     exclude group: 'junit', module: 'junit'
   }
-  testImplementation 'org.testcontainers:junit-jupiter:1.17.1'
-  testImplementation "org.assertj:assertj-core:3.22.0"
+  testImplementation 'org.testcontainers:junit-jupiter:1.17.3'
+  testImplementation 'org.assertj:assertj-core:3.23.1'
   testImplementation "org.slf4j:slf4j-simple:1.7.36"
   testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
   testImplementation "org.junit.jupiter:junit-jupiter-params:${junitVersion}"

@@ -1,15 +1,21 @@
 # Elasticsearch Langdetect Ingest Processor
 
-Uses the [langdetect](https://github.com/YouCruit/language-detection/) plugin (or alternatively [lingua](https://github.com/pemistahl/lingua/)) to try to find out the language used in a field.
+Uses the [langdetect](https://github.com/YouCruit/language-detection/) plugin.
 
 Note that Elasticsearch has native support for langdetection nowadays using the
 `inference` ingest processor. See more in
 [the documentation](https://www.elastic.co/guide/en/machine-learning/current/ml-lang-ident.html)
 
+**Note**: As of Elasticsearch 8.3.3 the lingua implementation has been
+removed again due to issues with the security manager. Feel free to check
+out previous commits and create a PR if you got it working to include it
+again.
+
 ## Installation
 
 | ES    | Command |
 | ----- | ------- |
+| 8.3.3 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/8.3.3.1/ingest-langdetect-8.3.3.1.zip` |
 | 8.3.2 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/8.3.2.1/ingest-langdetect-8.3.2.1.zip` |
 | 8.3.1 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/8.3.1.1/ingest-langdetect-8.3.1.1.zip` |
 | 8.3.0 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/8.3.0.1/ingest-langdetect-8.3.0.1.zip` |
@@ -227,12 +233,6 @@ GET my-index/doc/2
 | target_field   | Field name to write the language to |
 | max_length     | Max length of of characters to read, defaults to 10kb, requires a byte size value, like 1mb |
 | ignore_missing | Ignore missing source field. Not throwing exception in that case. Expects for boolean value, defaults to false. |
-| implementation | **Exists only from 8.0 onwards**: Can be 'lingua' to use the [lingua](https://github.com/pemistahl/lingua/) language detector library, everything else defaults to use the [langdetect](https://github.com/YouCruit/language-detection/) code. |
-
-**Note**: The `lingua` implementation requires **a lot more** more memory
-for your nodes having the ingest role. Please test this before using in
-production. The memory is only used, once the `lingua` processor is actually
-used in a pipeline.
 
 ## Setup
 
