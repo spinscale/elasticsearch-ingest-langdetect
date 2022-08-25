@@ -21,6 +21,7 @@ import com.cybozu.labs.langdetect.LangDetectException;
 import com.cybozu.labs.langdetect.SecureDetectorFactory;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.env.Environment;
+import org.elasticsearch.index.VersionType;
 import org.elasticsearch.ingest.IngestDocument;
 import org.elasticsearch.ingest.Processor;
 import org.junit.jupiter.api.BeforeAll;
@@ -98,9 +99,10 @@ public class LangDetectProcessorTests {
     }
 
     private Map<String, Object> ingestDocument(Map<String, Object> config, String field, String value) throws Exception {
-        Map<String, Object> document = new HashMap<>();
+        Map<String, Object> document = new HashMap<>(1);
         document.put(field, value);
-        IngestDocument ingestDocument = new IngestDocument(document, Collections.emptyMap());
+        IngestDocument ingestDocument = new IngestDocument("my-index", "my-id", 1L, null,
+                VersionType.INTERNAL, document);
 
         Processor processor = new LangDetectProcessor.Factory()
                 .create(Collections.emptyMap(), "my-tag", "desc", config);
