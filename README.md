@@ -33,6 +33,7 @@ again.
 | 8.0.0-rc1 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/8.0.0-rc1.1/ingest-langdetect-8.0.0-rc1.1.zip` |
 | 8.0.0-beta1 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/8.0.0-beta1.1/ingest-langdetect-8.0.0-beta1.1.zip` |
 | 8.0.0-alpha2 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/8.0.0-alpha2.1/ingest-langdetect-8.0.0-alpha2.1.zip` |
+| 7.17.6 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/7.17.6.1/ingest-langdetect-7.17.6.1.zip` |
 | 7.17.5 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/7.17.5.1/ingest-langdetect-7.17.5.1.zip` |
 | 7.17.4 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/7.17.4.1/ingest-langdetect-7.17.4.1.zip` |
 | 7.17.3 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/7.17.3.1/ingest-langdetect-7.17.3.1.zip` |
