@@ -15,6 +15,7 @@ again.
 
 | ES    | Command |
 | ----- | ------- |
+| 8.4.1 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/8.4.1.1/ingest-langdetect-8.4.1.1.zip` |
 | 8.4.0 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/8.4.0.1/ingest-langdetect-8.4.0.1.zip` |
 | 8.3.3 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/8.3.3.1/ingest-langdetect-8.3.3.1.zip` |
 | 8.3.2 | `bin/elasticsearch-plugin install https://github.com/spinscale/elasticsearch-ingest-langdetect/releases/download/8.3.2.1/ingest-langdetect-8.3.2.1.zip` |
