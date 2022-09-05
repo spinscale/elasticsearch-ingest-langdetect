@@ -1,5 +1,7 @@
 # Elasticsearch Langdetect Ingest Processor
 
+**Note: Maintainer wanted. I cannot guarantee to keep maintaining this, so if you want to take over as a maintainer, please fork the repo, provide new packages per release and give me a ping to link to your repository!**
+
 Uses the [langdetect](https://github.com/YouCruit/language-detection/) plugin.
 
 Note that Elasticsearch has native support for langdetection nowadays using the
